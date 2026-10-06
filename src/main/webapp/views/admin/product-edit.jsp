@@ -1,53 +1,86 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Chỉnh Sửa Sản Phẩm</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa Sản Phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>Chỉnh Sửa Sản Phẩm #${product.productId}</h2>
-    <form action="<c:url value='/admin/product/update'/>" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="productId" value="${product.productId}">
+<body class="bg-light">
 
-        <label>Tên sản phẩm:</label><br>
-        <input type="text" name="productName" value="${product.productName}" required style="width: 350px;"><br><br>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <a href="<c:url value='/admin/products'/>" class="btn btn-sm btn-outline-secondary me-3"><i class="fa-solid fa-arrow-left"></i></a>
+                        <h4 class="fw-bold mb-0">Chỉnh Sửa Sản Phẩm #${product.productId}</h4>
+                    </div>
 
-        <label>Giá bán (VNĐ):</label><br>
-        <input type="number" step="0.01" name="price" value="${product.price}" required style="width: 350px;"><br><br>
+                    <form action="<c:url value='/admin/product/update'/>" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="productId" value="${product.productId}">
 
-        <label>Danh mục sản phẩm:</label><br>
-        <select name="categoryId" style="width: 350px; padding: 5px;">
-            <c:forEach items="${categories}" var="c">
-                <option value="${c.categoryId}" ${product.category.categoryId == c.categoryId ? 'selected' : ''}>
-                    ${c.categoryName}
-                </option>
-            </c:forEach>
-        </select><br><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tên sản phẩm <span class="text-danger">*</span></label>
+                            <input type="text" name="productName" value="${product.productName}" class="form-control" required>
+                        </div>
 
-        <label>Mô tả chi tiết:</label><br>
-        <textarea name="description" rows="5" style="width: 350px;">${product.description}</textarea><br><br>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" name="price" value="${product.price}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Danh mục <span class="text-danger">*</span></label>
+                                <select name="categoryId" class="form-select" required>
+                                    <c:forEach items="${categories}" var="c">
+                                        <option value="${c.categoryId}" ${product.category.categoryId == c.categoryId ? 'selected' : ''}>
+                                            ${c.categoryName}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
 
-        <label>Ảnh hiện tại:</label><br>
-        <c:choose>
-            <c:when test="${product.images != null && product.images.startsWith('http')}">
-                <img src="${product.images}" width="120" height="100" />
-            </c:when>
-            <c:otherwise>
-                <img src="<c:url value='/image?fname=${product.images}'/>" width="120" height="100" />
-            </c:otherwise>
-        </c:choose>
-        <br><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mô tả sản phẩm</label>
+                            <textarea name="description" rows="4" class="form-control">${product.description}</textarea>
+                        </div>
 
-        <label>Link ảnh mới (URL):</label><br>
-        <input type="text" name="images" value="${product.images}" style="width: 350px;"><br><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold d-block">Ảnh sản phẩm hiện tại</label>
+                            <c:choose>
+                                <c:when test="${product.images != null && product.images.startsWith('http')}">
+                                    <img src="${product.images}" class="rounded-3 shadow-sm border mb-2" width="120" height="90" style="object-fit: cover;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='/image?fname=${product.images}'/>" class="rounded-3 shadow-sm border mb-2" width="120" height="90" style="object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
 
-        <label>Hoặc Upload ảnh mới thay thế:</label><br>
-        <input type="file" name="imageFile"><br><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Link ảnh mới (URL)</label>
+                            <input type="text" name="images" value="${product.images}" class="form-control">
+                        </div>
 
-        <button type="submit">Cập Nhật</button>
-        <a href="<c:url value='/admin/products'/>">Hủy bỏ</a>
-    </form>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Hoặc tải file ảnh mới</label>
+                            <input type="file" name="imageFile" class="form-control">
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning rounded-pill px-4"><i class="fa-solid fa-pen-to-square me-1"></i>Cập Nhật</button>
+                            <a href="<c:url value='/admin/products'/>" class="btn btn-outline-secondary rounded-pill px-4">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
-</html>F
+</html>
